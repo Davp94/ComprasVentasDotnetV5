@@ -1,0 +1,13 @@
+@ComprasVentas_HostAddress = http://localhost:5171
+
+GET {{ComprasVentas_HostAddress}}/api/categoria
+Accept: application/json
+
+###
+POST {{ComprasVentas_HostAddress}}/api/categoria
+Accept: application/json
+
+{
+    "nombre": "Categoria 1",
+    "descripcion": "dasdsadsadsadsadas"
+}
