@@ -3,11 +3,31 @@
 GET {{ComprasVentas_HostAddress}}/api/categoria
 Accept: application/json
 
+### Get categoria By Id
+GET {{ComprasVentas_HostAddress}}/api/categoria/2
+Accept: application/json
+
+
 ###
 POST {{ComprasVentas_HostAddress}}/api/categoria
+Content-Type: application/json
 Accept: application/json
 
 {
-    "nombre": "Categoria 1",
-    "descripcion": "dasdsadsadsadsadas"
+    "Nombre": "Categoria 2",
+    "Descripcion": "dasdsadsadsadsadas2"
 }
+
+###
+PUT {{ComprasVentas_HostAddress}}/api/categoria/3
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Nombre": "Categoria 2 upd",
+    "Descripcion": "dasdsadsadsadsadas2 upd"
+}
+
+### Delete categoria By Id
+DELETE {{ComprasVentas_HostAddress}}/api/categoria/3
+Accept: application/json
