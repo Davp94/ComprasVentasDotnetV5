@@ -11,6 +11,10 @@ builder.Services.AddDbContext<ComprasVentas.AppDbContext>(options =>
 builder.Services.AddScoped<CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
+//validations
+builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();
+
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
