@@ -10,6 +10,8 @@ builder.Services.AddDbContext<ComprasVentas.AppDbContext>(options =>
 // Add services to the container.
 builder.Services.AddScoped<CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();

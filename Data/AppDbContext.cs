@@ -59,7 +59,8 @@ public class AppDbContext : DbContext
             e.Property(p=>p.Genero).HasMaxLength(20);
             e.Property(p=>p.Telefono).HasMaxLength(20);
             e.Property(p=>p.Direccion).HasMaxLength(300);
-            e.HasOne(u=>u.Usuario).WithOne(p=>p.Persona);
+            e.HasOne(u=>u.Usuario).WithOne(p=>p.Persona)
+            .HasForeignKey<Usuario>(p=>p.PersonaId);
         });
 
           modelBuilder.Entity<Documento>(e=>

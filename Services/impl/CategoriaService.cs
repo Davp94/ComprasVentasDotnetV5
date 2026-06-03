@@ -40,6 +40,11 @@ public class CategoriaService(CategoriaRepository repository) : ICategoriaServic
     {
         try
         {
+            //valid unique email
+            if (true)
+            {
+                throw new BusinessRuleException("");
+            }
             var categoriaToCreate = new Categoria
             {
                 Nombre = categoria.Nombre,

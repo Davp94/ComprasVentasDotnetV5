@@ -31,3 +31,7 @@ Accept: application/json
 ### Delete categoria By Id
 DELETE {{ComprasVentas_HostAddress}}/api/categoria/3
 Accept: application/json
+
+### Get usuario By Id
+GET {{ComprasVentas_HostAddress}}/api/usuario/dsadsa
+Accept: application/json

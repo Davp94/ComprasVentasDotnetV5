@@ -12,5 +12,6 @@ public class Usuario
 
     public string Password { get; set; } = string.Empty;
 
+    public int PersonaId { get; set; }
     public Persona Persona { get; set; }
 }

@@ -4,7 +4,7 @@ namespace ComprasVentas;
 
 public interface IUsuarioService
 {
-     Task<List<UsuarioDto>> GetAllUsuarios();
+    Task<List<UsuarioDto>> GetAllUsuarios();
 
     Task<UsuarioDto?> GetUsuarioById(int id);
 
