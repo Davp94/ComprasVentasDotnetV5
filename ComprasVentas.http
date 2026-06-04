@@ -33,5 +33,23 @@ DELETE {{ComprasVentas_HostAddress}}/api/categoria/3
 Accept: application/json
 
 ### Get usuario By Id
-GET {{ComprasVentas_HostAddress}}/api/usuario/dsadsa
+GET {{ComprasVentas_HostAddress}}/api/usuario/33
 Accept: application/json
+
+### Create usuario
+POST {{ComprasVentas_HostAddress}}/api/usuario
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Username": "Categoria 2",
+    "Email": "test@test.com",
+    "Password": "passworD1!",
+    "Nombres": "dasdsadsad sadsadas2",
+    "Apellidos": "dasdsadsa dsadsadas2",
+    "FechaNacimiento": "01/01/2000",
+    "Genero": "dasdsadsadsads",
+    "Telefono": "dasdsadsadsads",
+    "Direccion": "dasdsadsadsadsa",
+    "Nacionalidad": "dasdsadsadsad"
+}

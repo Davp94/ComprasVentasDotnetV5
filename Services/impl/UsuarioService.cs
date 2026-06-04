@@ -2,9 +2,11 @@ using System;
 
 namespace ComprasVentas;
 
-public class UsuarioService(UsuarioRepository usuarioRepository) : IUsuarioService
+public class UsuarioService(UsuarioRepository usuarioRepository, ILogger<UsuarioController> logger) : IUsuarioService
 {
     private readonly UsuarioRepository _usuarioRepository = usuarioRepository;
+
+    private readonly ILogger<UsuarioController> _logger = logger;
 
     public Task<UsuarioDto> CreateUsuario(CreateUsuarioDto categoria)
     {
@@ -26,15 +28,15 @@ public class UsuarioService(UsuarioRepository usuarioRepository) : IUsuarioServi
         try
         {
             var usuario = await _usuarioRepository.GetUsuarioById(id);
+            _logger.LogInformation("Data from user retrieved on get user by Id {usuario}", usuario);
             if(usuario == null)
             {
-                throw new ResourceNotFoundException($"Usuario con ID {id} no encontrado");
+                throw new ResourceNotFoundException("Usuario", id);
             }
             return MapToDto(usuario);
         }
         catch (System.Exception)
-        {
-            
+        {  
             throw;
         }
     }
