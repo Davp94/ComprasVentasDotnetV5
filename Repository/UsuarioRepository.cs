@@ -14,24 +14,30 @@ public class UsuarioRepository
 
     public async Task<List<Usuario>> GetAllUsuarios()
     {
-        return await _context.Usuarios.ToListAsync();
+        return await _context.Usuarios
+        .Include(u => u.Persona)
+        .Include(u => u.Roles)
+        .ToListAsync();
     }
 
     public async Task<Usuario?> GetUsuarioById(int id)
     {
-        return await _context.Usuarios.FindAsync(id);
+        return await _context.Usuarios
+        .Include(u => u.Persona)
+        .Include(u => u.Roles)
+        .FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<Usuario> CreateUsuario(Usuario categoria)
+    public async Task<Usuario> CreateUsuario(Usuario usuario)
     {
-        _context.Usuarios.Add(categoria);
+        _context.Usuarios.Add(usuario);
         await _context.SaveChangesAsync();
-        return categoria;
+        return usuario;
     }
 
-    public async Task UpdateUsuario(Usuario categoria)
+    public async Task UpdateUsuario(Usuario usuario)
     {
-        _context.Usuarios.Update(categoria);
+        _context.Usuarios.Update(usuario);
         await _context.SaveChangesAsync();
     }
 

@@ -2,25 +2,25 @@ using System;
 
 namespace ComprasVentas;
 
-public class UsuarioService(UsuarioRepository usuarioRepository, ILogger<UsuarioController> logger) : IUsuarioService
+public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository rolRepository,ILogger<UsuarioController> logger) : IUsuarioService
 {
     private readonly UsuarioRepository _usuarioRepository = usuarioRepository;
 
+    private readonly RolRepository _rolRepository = rolRepository;
+
     private readonly ILogger<UsuarioController> _logger = logger;
 
-    public Task<UsuarioDto> CreateUsuario(CreateUsuarioDto categoria)
+     public async Task<List<UsuarioDto>> GetAllUsuarios()
     {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteUsuario(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<UsuarioDto>> GetAllUsuarios()
-    {
-        throw new NotImplementedException();
+        try
+        {
+            var usuarios = await _usuarioRepository.GetAllUsuarios();
+            return usuarios.Select(u=>MapToDto(u)).ToList();
+        }
+        catch (System.Exception)
+        
+            throw;
+        }
     }
 
     public async Task<UsuarioDto?> GetUsuarioById(int id)
@@ -41,16 +41,80 @@ public class UsuarioService(UsuarioRepository usuarioRepository, ILogger<Usuario
         }
     }
 
-    public Task UpdateUsuario(int id, CreateUsuarioDto categoria)
+    public async Task<UsuarioDto> CreateUsuario(CreateUsuarioDto usuario)
+    {
+        try
+        {
+            var roles = new List<Rol>();
+            if(usuario.RolIds != null && usuario.RolIds.Count>0)
+            {
+                foreach (var rolId in usuario .RolIds)
+                {
+                    var rol = await _rolRepository.GetRolById(rolId);
+                    if( rol!= null) roles.Add(rol); 
+                }
+            }
+            var usuarioToCreate = new Usuario
+            {
+                Nombre = usuario.Username,
+                Email = usuario.Email,
+                Password = usuario.Password,
+                Persona = new Persona
+                {
+                    Nombres = usuario.Nombres,
+                    Apellidos = usuario.Apellidos,
+                    FechaNacimiento = DateOnly.ParseExact(usuario.FechaNacimiento, "dd/MM/yyyy"),
+                    Genero = usuario.Genero,
+                    Telefono = usuario.Telefono,
+                    Direccion = usuario.Direccion,
+                    Nacionalidad = usuario.Nacionalidad
+                },
+                Roles = roles
+            };
+            var usuarioCreated = await _usuarioRepository.CreateUsuario(usuarioToCreate);
+            return MapToDto(usuarioCreated);
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+    }
+
+    public Task UpdateUsuario(int id, CreateUsuarioDto usuario)
     {
         throw new NotImplementedException();
     }
+
+    public async Task DeleteUsuario(int id)
+    {
+        try
+        {
+            await _usuarioRepository.DeleteAsync(id);
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+    }
+
 
     private UsuarioDto MapToDto(Usuario usuario)
     {
         return new UsuarioDto
         {
-            Id = usuario.Id
+            Id = usuario.Id,
+            Username = usuario.Nombre,
+            Email = usuario.Email,
+            Nombres = usuario.Persona?.Nombres ?? string.Empty,
+            Apellidos = usuario.Persona?.Apellidos ?? string.Empty,
+            FechaNacimiento = usuario.Persona?.FechaNacimiento.ToString("yyyy-MM-dd"),
+            Genero = usuario.Persona?.Genero,
+            Telefono = usuario.Persona?.Telefono,
+            Direccion = usuario.Persona?.Direccion,
+            Nacionalidad = usuario.Persona?.Nacionalidad,
+            RolIds = usuario.Roles?.Select(r => r.Id).ToList() ?? []
         };
     }
 }

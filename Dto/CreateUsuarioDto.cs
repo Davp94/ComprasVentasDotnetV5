@@ -41,5 +41,7 @@ public class CreateUsuarioDto
 
     public string? Nacionalidad { get; set; }
 
+    public List<int> RolIds { get; set; } = [];
+
     //TODO add documentos
 }

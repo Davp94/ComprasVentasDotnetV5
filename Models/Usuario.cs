@@ -14,4 +14,6 @@ public class Usuario
 
     public int PersonaId { get; set; }
     public Persona Persona { get; set; }
+
+    public List<Rol> Roles { get; set; } = [];
 }

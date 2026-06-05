@@ -14,6 +14,7 @@ public class UsuarioDto
     public string? Telefono { get; set; }
     public string? Direccion { get; set; }
     public string? Nacionalidad { get; set; }
+    public List<int> RolIds { get; set; } = [];
 
     //TODO add documentos
 }

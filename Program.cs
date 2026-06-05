@@ -19,6 +19,10 @@ builder.Services.AddScoped<CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<RolRepository>();
+builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddScoped<PermisoRepository>();
+builder.Services.AddScoped<IPermisoService, PermisoService>();
 
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();

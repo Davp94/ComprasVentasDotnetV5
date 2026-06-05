@@ -16,6 +16,8 @@ public class AppDbContext : DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Persona> Personas { get; set; }
     public DbSet<Documento> Documentos { get; set; }
+    public DbSet<Rol> Roles { get; set; }
+    public DbSet<Permiso> Permisos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,6 +53,16 @@ public class AppDbContext : DbContext
             e.HasIndex(c => c.Email).IsUnique();
         }); 
 
+        modelBuilder.Entity<Usuario>()
+           .HasMany(u => u.Roles)
+           .WithMany(r => r.Usuarios)
+           .UsingEntity(j => j.ToTable("UsuariosRoles"));
+
+        modelBuilder.Entity<Rol>()
+           .HasMany(p => p.Permisos)
+           .WithMany(r => r.Roles)
+           .UsingEntity(j => j.ToTable("RolesPermisos"));   
+
         modelBuilder.Entity<Persona>(e=>
         {
             e.Property(p=>p.Nombres).IsRequired().HasMaxLength(100);
@@ -69,6 +81,25 @@ public class AppDbContext : DbContext
             e.Property(c=>c.Nombre).IsRequired().HasMaxLength(50);
             e.Property(c=>c.DescripcionDoc).HasMaxLength(200);
              e.HasOne(p=>p.Persona);
+        });
+
+        modelBuilder.Entity<Rol>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.Nombre).IsRequired().HasMaxLength(100);
+            e.Property(c=>c.Descripcion).HasMaxLength(300);
+            
+            e.HasIndex(c => c.Nombre).IsUnique();
+        });
+
+        modelBuilder.Entity<Permiso>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.Nombre).IsRequired().HasMaxLength(100);
+            e.Property(c=>c.Recurso).HasMaxLength(100);
+            e.Property(c=>c.Action).IsRequired().HasMaxLength(100);
+            
+            e.HasIndex(c => c.Nombre).IsUnique();
         });
     }
 

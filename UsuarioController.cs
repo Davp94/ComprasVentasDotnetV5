@@ -29,7 +29,7 @@ namespace ComprasVentas
         {
             try
             {
-                _logger.LogInformation("Data received to create product {createUsuarioDto}", createUsuarioDto);
+                _logger.LogInformation("Data received to create product {@createUsuarioDto}", createUsuarioDto);
                 var usuario = await _service.CreateUsuario(createUsuarioDto);
                 return Ok(usuario);
             }
