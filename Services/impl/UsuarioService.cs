@@ -17,7 +17,7 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
             var usuarios = await _usuarioRepository.GetAllUsuarios();
             return usuarios.Select(u=>MapToDto(u)).ToList();
         }
-        catch (System.Exception)
+        catch (System.Exception){
         
             throw;
         }
@@ -58,7 +58,7 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
             {
                 Nombre = usuario.Username,
                 Email = usuario.Email,
-                Password = usuario.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password),
                 Persona = new Persona
                 {
                     Nombres = usuario.Nombres,
