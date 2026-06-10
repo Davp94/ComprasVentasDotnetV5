@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComprasVentas
 {
+    [Authorize]
     [Route("api/[controller]")] //  -- route -> api/categoria
     [ApiController]
     public class CategoriaController : ControllerBase

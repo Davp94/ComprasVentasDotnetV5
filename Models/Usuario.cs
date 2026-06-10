@@ -16,4 +16,6 @@ public class Usuario
     public Persona Persona { get; set; }
 
     public List<Rol> Roles { get; set; } = [];
+
+    public List<RefreshToken> RefreshTokens { get; set; } = [];
 }

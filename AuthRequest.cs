@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 namespace ComprasVentas;
 
 public record AuthRequest
-{
+(
     [Required]
     [EmailAddress]
-    public string Email;
+    string Email,
 
     [Required]
-    public string Password;
-}
+    string Password
+);

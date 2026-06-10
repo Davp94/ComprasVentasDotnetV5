@@ -3,18 +3,12 @@ using System;
 namespace ComprasVentas;
 
 public record AuthResponse
-{
-    public string AccessToken;
-
-    public string RefreshToken;
-
-    public int UsuarioId;
-
-    public int ExpirationMinutes;
-
-    public string Email;
-
-    public List<string> Roles;
-
-    public List<string> Permisos;
-}
+(
+ string AccessToken,
+ string RefreshToken,
+ int UsuarioId,
+ int ExpirationMinutes,
+ string Email,
+ List<string> Roles,
+ List<string> Permisos
+);
