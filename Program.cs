@@ -72,7 +72,14 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/openapi/v1.json", "API Compras Ventas .NET");
     });
+    //Configure Data Seeding
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+        await context.SeedAsync();
+    }
 }
+
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
