@@ -1,12 +1,17 @@
 using System;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComprasVentas;
 
-public class ProductoService(AppDbContext appDbContext) : IProductoService
+public class ProductoService(AppDbContext appDbContext, IMapper mapper, IFileService fileService) : IProductoService
 {
 
     private readonly AppDbContext _context = appDbContext;
+
+    private readonly IMapper _mapper = mapper;
+
+    private readonly IFileService _fileService = fileService;
 
     public async Task<PageResultDto<ProductoDto>> GetProductosAsync(ProductoFilterDto productoFilterDto)
     {
@@ -53,24 +58,41 @@ public class ProductoService(AppDbContext appDbContext) : IProductoService
         var items = await query.Skip((productoFilterDto.Page -1 ) * productoFilterDto.Size)
         .Take(productoFilterDto.Size).ToListAsync();
 
-        return new PageResultDto<ProductoDto>
+        return PageResultDto<ProductoDto>.Build(
+            _mapper.Map<IEnumerable<ProductoDto>>(items),
+            TotalCount,
+            productoFilterDto.Page,
+            productoFilterDto.Size
+        );
+    }
+
+    public async Task<ProductoDto> CreateProductoAsync(CreateProductoDto createProductoDto)
+    {
+        var producto = new Producto
         {
-            Items = items,
-            TotalCount = TotalCount,
-            Page = productoFilterDto.Page,
-            Size = productoFilterDto.Size
+            Nombre = createProductoDto.Nombre,
+            Descripcion = createProductoDto.Descripcion,
+            PrecioVentaActual = createProductoDto.PrecioVentaActual,
+            Marca = createProductoDto.Marca,
+            Categoria = _context.Categorias.Find(createProductoDto.CategoriaId)
         };
 
+        if(createProductoDto.Imagen != null)
+        {
+            var imagePath = await _fileService.SaveFileAsync(createProductoDto.Imagen);
+            producto.Imagen = imagePath;
+        }
+
+        _context.Productos.Add(producto);
+        await _context.SaveChangesAsync();
+
+        var createdProducto = await _context.Productos.Include(p=>p.Categoria).FirstOrDefaultAsync(p=>p.Id == producto.Id);
+        return _mapper.Map<ProductoDto>(createdProducto);
     }
 
-    public Task<ProductoDto> CreateProductoAsync(CreateProductoDto createProductoDto)
+    public async Task<List<ProductoDto>> FindAllProductosByAlmacen(int almacenId)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<ProductoDto>> FindAllProductosByAlmacen(int almacenId)
-    {
-        throw new NotImplementedException();
+        var productos = await _context.Al
     }
 
     private IQueryable<Producto> ApplySorting(IQueryable<Producto> query, string sortField, string sortOrder)

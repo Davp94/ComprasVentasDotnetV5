@@ -48,7 +48,7 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
             var roles = new List<Rol>();
             if(usuario.RolIds != null && usuario.RolIds.Count>0)
             {
-                foreach (var rolId in usuario .RolIds)
+                foreach (var rolId in usuario.RolIds)
                 {
                     var rol = await _rolRepository.GetRolById(rolId);
                     if( rol!= null) roles.Add(rol); 

@@ -29,7 +29,8 @@ builder.Services.AddScoped<IPermisoService, PermisoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();
-
+//AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
 //JWT Auth
 builder.Services.AddAuthentication(options =>
 {
