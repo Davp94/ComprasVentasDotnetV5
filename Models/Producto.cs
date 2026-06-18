@@ -21,4 +21,8 @@ public class Producto
     public bool Estado { get; set; }
 
     public Categoria? Categoria { get; set; }
+
+    public List<AlmacenProducto> AlmacenProductos { get; set; } = [];
+
+    public List<Movimiento> Movimientos { get; set; } = [];
 }

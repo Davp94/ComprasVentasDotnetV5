@@ -92,7 +92,13 @@ public class ProductoService(AppDbContext appDbContext, IMapper mapper, IFileSer
 
     public async Task<List<ProductoDto>> FindAllProductosByAlmacen(int almacenId)
     {
-        var productos = await _context.Al
+        var productos = await _context.AlmacenProductos
+            .Where(ap => ap.Almacen.Id == almacenId)
+            .Include(ap => ap.Producto)
+            .ThenInclude(p=>p.Categoria)
+            .Select(ap => ap.Producto)
+            .ToListAsync();
+        return productos.Select(p=>_mapper.Map<ProductoDto>(p)).ToList();
     }
 
     private IQueryable<Producto> ApplySorting(IQueryable<Producto> query, string sortField, string sortOrder)

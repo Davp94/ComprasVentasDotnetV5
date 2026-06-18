@@ -18,4 +18,7 @@ public class Usuario
     public List<Rol> Roles { get; set; } = [];
 
     public List<RefreshToken> RefreshTokens { get; set; } = [];
+
+    public List<Nota> Notas { get; set; }
+
 }

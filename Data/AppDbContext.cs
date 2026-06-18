@@ -19,6 +19,15 @@ public class AppDbContext : DbContext
     public DbSet<Rol> Roles { get; set; }
     public DbSet<Permiso> Permisos { get; set; }
 
+    public DbSet<AlmacenProducto> AlmacenProductos { get; set; }
+
+    public DbSet<Sucursal> Sucursales { get; set; }
+
+    public DbSet<Almacen> Almacenes { get; set; }
+    public DbSet<Nota> Notas { get; set; }
+    public DbSet<ClienteProveedor> ClienteProveedor { get; set; }
+    public DbSet<Movimiento> Movimientos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Configuración adicional de las (entidades == modelos) si es necesario
@@ -100,6 +109,79 @@ public class AppDbContext : DbContext
             e.Property(c=>c.Action).IsRequired().HasMaxLength(100);
             
             e.HasIndex(c => c.Nombre).IsUnique();
+        });
+
+        modelBuilder.Entity<Sucursal>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.Nombre).IsRequired().HasMaxLength(255);
+            e.Property(c=>c.Direccion).IsRequired();
+            e.Property(c=>c.Telefono).IsRequired().HasMaxLength(20);
+            e.Property(c=>c.Ciudad).IsRequired().HasMaxLength(50);
+            
+        });
+
+        modelBuilder.Entity<Almacen>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.Nombre).IsRequired().HasMaxLength(100);
+            e.Property(c=>c.Codigo).HasMaxLength(20);
+            e.Property(c=>c.Descripcion);
+            e.Property(c=>c.Direccion).IsRequired();
+            e.Property(c=>c.Telefono).IsRequired().HasMaxLength(20);
+            e.Property(c=>c.Ciudad).IsRequired().HasMaxLength(50);
+            e.HasOne(a=>a.Sucursal)
+                .WithMany(s=>s.Almacenes)
+                .HasForeignKey("SucursalId");
+        });
+
+         modelBuilder.Entity<AlmacenProducto>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.CantidadActual).IsRequired();
+            e.Property(c=>c.FechaActualizacion);
+            e.Property(c=>c.PrecioVentaActual).IsRequired();
+            e.Property(c=>c.Estado).IsRequired();
+            e.HasOne(a=>a.Producto)
+                .WithMany(s=>s.AlmacenProductos)
+                .HasForeignKey("ProductoId");
+            e.HasOne(a=>a.Almacen)
+                .WithMany(s=>s.AlmacenProductos)
+                .HasForeignKey("AlmacenId");    
+        });
+
+         modelBuilder.Entity<Nota>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.TipoNota).IsRequired();
+            e.Property(c=>c.Impuestos);
+            e.Property(c=>c.Descuento);
+            e.Property(c=>c.Fecha);
+            e.Property(c=>c.Estado).IsRequired();
+            e.Property(c=>c.Observaciones).IsRequired();
+            e.HasOne(a=>a.Usuario)
+                .WithMany(s=>s.Notas)
+                .HasForeignKey("UsuarioId");
+            e.HasOne(a=>a.ClienteProveedor)
+                .WithMany(s=>s.Notas)
+                .HasForeignKey("ClienteProveedorId");    
+        });
+
+        modelBuilder.Entity<Movimiento>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.TipoMovimiento).IsRequired();
+            e.Property(c=>c.PrecioUnitarioCompra).IsRequired();
+            e.Property(c=>c.PrecioUnitarioVenta).IsRequired();
+            e.HasOne(a=>a.Producto)
+                .WithMany(s=>s.Movimientos)
+                .HasForeignKey("ProductoId");
+            e.HasOne(a=>a.Almacen)
+                .WithMany(s=>s.Movimientos)
+                .HasForeignKey("AlmacenId"); 
+            e.HasOne(a=>a.Nota)
+                .WithMany(s=>s.Movimientos)
+                .HasForeignKey("NotaId");        
         });
     }
 
