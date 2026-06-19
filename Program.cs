@@ -27,6 +27,7 @@ builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddScoped<PermisoRepository>();
 builder.Services.AddScoped<IPermisoService, PermisoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<INotaService, NotaService>();
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();
 //AutoMapper
