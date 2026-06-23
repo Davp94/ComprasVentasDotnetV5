@@ -30,6 +30,16 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotaService, NotaService>();
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();
+// Seeders
+builder.Services.AddScoped<PermisoSeeder>();
+builder.Services.AddScoped<RolSeeder>();
+builder.Services.AddScoped<UsuarioSeeder>();
+builder.Services.AddScoped<CategoriaSeeder>();
+builder.Services.AddScoped<ProductoSeeder>();
+builder.Services.AddScoped<SucursalSeeder>();
+builder.Services.AddScoped<AlmacenSeeder>();
+builder.Services.AddScoped<ClienteProveedorSeeder>();
+builder.Services.AddScoped<DataSeeder>();
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 //JWT Auth

@@ -13,4 +13,6 @@ public class Sucursal
     public string Ciudad {get; set; } = string.Empty;
 
     public List<Almacen> Almacenes { get; set; } = [];
+    public List<Usuario> Usuarios { get; set; } = [];
+
 }

@@ -1,4 +1,5 @@
 using System;
+using ComprasVentas.Dto;
 
 namespace ComprasVentas;
 
@@ -16,5 +17,5 @@ public class UsuarioDto
     public string? Nacionalidad { get; set; }
     public List<int> RolIds { get; set; } = [];
 
-    //TODO add documentos
+    public List<DocumentoDto> Documentos { get; set; } = [];
 }

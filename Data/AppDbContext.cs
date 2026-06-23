@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComprasVentas;
@@ -30,6 +31,32 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //config to snack_case database sintax
+        foreach( var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            entity.SetTableName(ToSnackCase(entity.GetTableName()));
+
+            foreach (var property in entity.GetProperties())
+            {
+                property.SetColumnName(ToSnackCase(property.GetFieldName()));
+            }
+
+            foreach (var key in entity.GetKeys())
+            {
+                key.SetName(ToSnackCase(key.GetName()));
+            }
+
+            foreach (var fk in entity.GetForeignKeys())
+            {
+                fk.SetConstraintName(ToSnackCase(fk.GetConstraintName()));
+            }
+
+            foreach (var index in entity.GetIndexes())
+            {
+                index.SetDatabaseName(ToSnackCase(index.GetDatabaseName()));
+            }
+
+        }
         // Configuración adicional de las (entidades == modelos) si es necesario
         modelBuilder.Entity<Categoria>(e=>
         {
@@ -71,6 +98,11 @@ public class AppDbContext : DbContext
            .HasMany(p => p.Permisos)
            .WithMany(r => r.Roles)
            .UsingEntity(j => j.ToTable("RolesPermisos"));   
+        
+        modelBuilder.Entity<Usuario>()
+           .HasMany(u => u.Sucursales)
+           .WithMany(r => r.Usuarios)
+           .UsingEntity(j => j.ToTable("SucursalUsuario"));
 
         modelBuilder.Entity<Persona>(e=>
         {
@@ -89,7 +121,7 @@ public class AppDbContext : DbContext
             e.Property(c=>c.Id).ValueGeneratedOnAdd();
             e.Property(c=>c.Nombre).IsRequired().HasMaxLength(50);
             e.Property(c=>c.DescripcionDoc).HasMaxLength(200);
-             e.HasOne(p=>p.Persona);
+            e.HasOne(p=>p.Persona);
         });
 
         modelBuilder.Entity<Rol>(e=>
@@ -183,6 +215,17 @@ public class AppDbContext : DbContext
                 .WithMany(s=>s.Movimientos)
                 .HasForeignKey("NotaId");        
         });
+    }
+
+    private string ToSnackCase (string input)
+    {
+        if(string.IsNullOrEmpty(input)) return input;
+
+        var startUnderscore = input.StartsWith("_");
+
+        var res = Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
+
+        return startUnderscore ? $"_{res}" : res;
     }
 
 }

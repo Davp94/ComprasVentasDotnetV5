@@ -21,4 +21,6 @@ public class Usuario
 
     public List<Nota> Notas { get; set; }
 
+    public List<Sucursal> Sucursales {get; set; } = [];
+
 }

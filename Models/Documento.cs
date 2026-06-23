@@ -12,7 +12,7 @@ public class Documento
     //camelCase public string descripcionDoc { get; set; }
     //snakeCase public string descripcion_doc { get; set; }
 
-    public string Referencia { get; set; }
+    public string Referencia { get; set; } //archivo
 
     public Persona Persona { get; set; }
 }

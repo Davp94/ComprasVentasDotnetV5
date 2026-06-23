@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using ComprasVentas.Dto;
 
 namespace ComprasVentas;
 
@@ -43,5 +44,6 @@ public class CreateUsuarioDto
 
     public List<int> RolIds { get; set; } = [];
 
-    //TODO add documentos
+    public List<CreateDocumentoDto> Documentos { get; set; } = [];
+
 }

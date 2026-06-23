@@ -9,11 +9,30 @@ public class DataSeeder
 
     private readonly UsuarioSeeder _usuarioSeeder;
 
-    public DataSeeder(PermisoSeeder permisoSeeder, RolSeeder rolSeeder, UsuarioSeeder usuarioSeeder)
+    private readonly CategoriaSeeder _categoriaSeeder;
+    private readonly ProductoSeeder _productoSeeder;
+    private readonly SucursalSeeder _sucursalSeeder;
+    private readonly AlmacenSeeder _almacenSeeder;
+    private readonly ClienteProveedorSeeder _clienteProveedorSeeder;
+
+    public DataSeeder(
+        PermisoSeeder permisoSeeder,
+        RolSeeder rolSeeder,
+        UsuarioSeeder usuarioSeeder,
+        CategoriaSeeder categoriaSeeder,
+        ProductoSeeder productoSeeder,
+        SucursalSeeder sucursalSeeder,
+        AlmacenSeeder almacenSeeder,
+        ClienteProveedorSeeder clienteProveedorSeeder)
     {
         _permisoSeeder = permisoSeeder;
         _rolSeeder = rolSeeder;
         _usuarioSeeder = usuarioSeeder;
+        _categoriaSeeder = categoriaSeeder;
+        _productoSeeder = productoSeeder;
+        _sucursalSeeder = sucursalSeeder;
+        _almacenSeeder = almacenSeeder;
+        _clienteProveedorSeeder = clienteProveedorSeeder;
     }
 
     public async Task SeedAsync()
@@ -21,5 +40,11 @@ public class DataSeeder
         await _permisoSeeder.SeedAsync();
         await _rolSeeder.SeedAsync();
         await _usuarioSeeder.SeedAsync();
+
+        await _categoriaSeeder.SeedAsync();
+        await _productoSeeder.SeedAsync();
+        await _sucursalSeeder.SeedAsync();
+        await _almacenSeeder.SeedAsync();
+        await _clienteProveedorSeeder.SeedAsync();
     }
 }

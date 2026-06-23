@@ -47,13 +47,65 @@ public class NotaService(AppDbContext appDbContext, IMapper mapper) : INotaServi
             }, transaction);
 
             //add movimientos
+            foreach (var movDto in createNotaDto.Movimientos)
+            {
+                const string sqlMovimientos = @"
+                    INSERT INTO movimientos(tipo_movimiento, cantidad, precio_unitario_compra, precio_unitario_venta, observaciones producto_id, almacen_id, nota_id) VALUES (@TipoMovimiento, @Cantidad, @PrecioUnitarioCompra, @PrecioUnitarioVenta, @Observaciones, @ProductoId, @AlmacenId, @NotaId);
+                ";
+                await connection.ExecuteAsync(sqlMovimientos, new
+                {   
+                    TipoMovimiento = createNotaDto.Tipo,
+                    Cantidad = movDto.Cantidad,
+                    PrecioUnitarioCompra = movDto.PrecioUnitarioCompra,
+                    PrecioUnitarioVenta = movDto.PrecioUnitarioVenta,
+                    ProductoId = movDto.ProductoId,
+                    AlmacenId = movDto.AlmacenId,
+                    Observaciones = movDto.Observaciones,
+                    NotaId = notaId
+                }, transaction);
+                const string sqlCheckStock = "select id, cantidad_actual from almacen_productos where producto_id = @ProductoId AND almacen_id = @AlmacenId LIMIT 1;";
+                var stockItem = await connection.QueryFirstOrDefaultAsync(sqlCheckStock, new { ProductoId = movDto.ProductoId, AlmacenId = movDto.AlmacenId}, transaction);
+                var cantidadCambio = createNotaDto.Tipo == "COMPRA" ? movDto.Cantidad : -movDto.Cantidad; 
+
+                if(stockItem != null)
+                {
+                    const string sqlUpdateStock = "UPDATE almacen_productos set cantidad_actual = cantidad_actual +@CantidadCambio, fecha_actualizacion = @Fecha where id = @Id;";
+                    await connection.ExecuteAsync(sqlUpdateStock, new
+                    {
+                        CantidadCambio = cantidadCambio,
+                        Fecha = DateTime.UtcNow,
+                        Id = stockItem.id
+                    }, transaction);
+                } else
+                {
+                    if(createNotaDto.Tipo == "VENTA")
+                    {
+                        throw new Exception($"No hay stock disponible en el almacen para el producto {movDto.ProductoId}");
+                    }
+
+                    const string sqlInsertStock = "@ INSERT INTO almacen_productos(cantidad_acutal, fecha_actualizacion, precio_venta_actual, estado, producto_id, almacen_id) VALUES (@Cantidad, @Fecha, @PrecioVenta, @Estado, @ProductoId, @AlmacenId)";
+
+                    await connection.ExecuteAsync(sqlInsertStock, new
+                    {
+                        Cantidad = movDto.Cantidad,
+                        Fecha = DateTime.Now,
+                        Precioventa = movDto.PrecioUnitarioVenta,
+                        Estado = true,
+                        ProductoId = movDto.ProductoId,
+                        AlmacenId = movDto.AlmacenId
+                    }, transaction);
+                }
+            }
             //update inventario
+            
             //close transaction
+            await transaction.CommitAsync();
             //return data
+            return await FindByIdAsync(notaId);
         }
         catch (System.Exception)
         {
-            
+            await transaction.RollbackAsync();
             throw;
         }
     }

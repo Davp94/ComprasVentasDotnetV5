@@ -2,13 +2,15 @@ using System;
 
 namespace ComprasVentas;
 
-public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository rolRepository,ILogger<UsuarioController> logger) : IUsuarioService
+public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository rolRepository,ILogger<UsuarioController> logger, IFileService fileService) : IUsuarioService
 {
     private readonly UsuarioRepository _usuarioRepository = usuarioRepository;
 
     private readonly RolRepository _rolRepository = rolRepository;
 
     private readonly ILogger<UsuarioController> _logger = logger;
+
+    private readonly IFileService _fileService = fileService;
 
      public async Task<List<UsuarioDto>> GetAllUsuarios()
     {
@@ -67,9 +69,16 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
                     Genero = usuario.Genero,
                     Telefono = usuario.Telefono,
                     Direccion = usuario.Direccion,
-                    Nacionalidad = usuario.Nacionalidad
+                    Nacionalidad = usuario.Nacionalidad,
+                    Documentos = usuario.Documentos.Select(async d=> new Documento
+                    {
+                        Nombre = d.Nombre,
+                        DescripcionDoc = d.DescripcionDoc,
+                        Referencia = await _fileService.SaveFileAsync(d.Referencia);
+                    }).ToList()
                 },
-                Roles = roles
+                Roles = roles,
+            
             };
             var usuarioCreated = await _usuarioRepository.CreateUsuario(usuarioToCreate);
             return MapToDto(usuarioCreated);

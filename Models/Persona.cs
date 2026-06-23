@@ -21,4 +21,6 @@ public class Persona
     public string? Nacionalidad { get; set; }
 
     public Usuario Usuario { get; set; }
+
+    public List<Documento> Documentos { get; set;} = [];
 }
