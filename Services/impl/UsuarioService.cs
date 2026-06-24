@@ -56,6 +56,16 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
                     if( rol!= null) roles.Add(rol); 
                 }
             }
+            var documentos = new List<Documento>();
+            foreach (var d in usuario.Documentos)
+            {
+                documentos.Add(new Documento
+                {
+                    Nombre = d.Nombre,
+                    DescripcionDoc = d.DescripcionDoc,
+                    Referencia = await _fileService.SaveFileAsync(d.Referencia)
+                });
+            }
             var usuarioToCreate = new Usuario
             {
                 Nombre = usuario.Username,
@@ -70,12 +80,7 @@ public class UsuarioService(UsuarioRepository usuarioRepository, RolRepository r
                     Telefono = usuario.Telefono,
                     Direccion = usuario.Direccion,
                     Nacionalidad = usuario.Nacionalidad,
-                    Documentos = usuario.Documentos.Select(async d=> new Documento
-                    {
-                        Nombre = d.Nombre,
-                        DescripcionDoc = d.DescripcionDoc,
-                        Referencia = await _fileService.SaveFileAsync(d.Referencia);
-                    }).ToList()
+                    Documentos = documentos
                 },
                 Roles = roles,
             

@@ -1,5 +1,7 @@
 using System.Text;
 using ComprasVentas;
+using ComprasVentas.Middleware;
+using ComprasVentas.Services.impl;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +30,7 @@ builder.Services.AddScoped<PermisoRepository>();
 builder.Services.AddScoped<IPermisoService, PermisoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotaService, NotaService>();
+builder.Services.AddScoped<EncryptionService>();
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();
 // Seeders
@@ -97,7 +100,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<EncryptionMiddleware>();
 app.MapControllers();
 
 app.Run();
