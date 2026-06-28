@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,6 +6,7 @@ namespace ComprasVentas
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController(IAuthService authService) : ControllerBase
     {
         public readonly IAuthService _authService = authService;

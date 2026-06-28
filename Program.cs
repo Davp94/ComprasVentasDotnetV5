@@ -14,6 +14,7 @@ builder.Services.AddDbContext<ComprasVentas.AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
 ));
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 //Serilog
 builder.Host.UseSerilog((context, services, config) =>
     config.ReadFrom.Configuration(context.Configuration)
@@ -30,6 +31,7 @@ builder.Services.AddScoped<PermisoRepository>();
 builder.Services.AddScoped<IPermisoService, PermisoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotaService, NotaService>();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<EncryptionService>();
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();
@@ -64,6 +66,16 @@ builder.Services.AddAuthentication(options =>
 
     };
 });
+
+builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("crear_categoria", policy => policy.Requirements.Add(new PermissionRequirement("crear_categoria")));
+    options.AddPolicy("editar_categoria", policy => policy.Requirements.Add(new PermissionRequirement("editar_categoria")));
+    options.AddPolicy("eliminar_categoria", policy => policy.Requirements.Add(new PermissionRequirement("eliminar_categoria")));
+    options.AddPolicy("leer:categorias", policy => policy.Requirements.Add(new PermissionRequirement("leer:categorias")));
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -100,7 +112,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<EncryptionMiddleware>();
+// app.UseMiddleware<EncryptionMiddleware>();
 app.MapControllers();
 
 app.Run();

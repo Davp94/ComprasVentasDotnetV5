@@ -17,6 +17,7 @@ namespace ComprasVentas
         }
 
         [HttpGet]
+        [Authorize(Policy = "leer:categorias")]
         public async Task<ActionResult<List<CategoriaDto>>> GetAll()   // /api/categoria
         {
             try
@@ -31,6 +32,7 @@ namespace ComprasVentas
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "ver_categorias")]
         public async Task<ActionResult<CategoriaDto>> GetById(int id) // /api/categoria/5
         {
             try
@@ -45,6 +47,7 @@ namespace ComprasVentas
         }
 
         [HttpPost]
+        [Authorize(Policy = "crear_categoria")]
         public async Task<ActionResult<CategoriaDto>> CreateCategoria([FromBody] CreateCategoriaDto categoriaDto) // /api/categoria
         {
             try
@@ -59,6 +62,7 @@ namespace ComprasVentas
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "editar_categoria")]
         public async Task<ActionResult> UpdateCategoria(int id, [FromBody] CreateCategoriaDto categoriaDto) // /api/categoria
         {
             try
@@ -73,6 +77,7 @@ namespace ComprasVentas
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "eliminar_categoria")]
         public async Task<ActionResult> DeleteCategoria(int id) // /api/categoria
         {
             try

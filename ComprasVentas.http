@@ -1,39 +1,152 @@
 @ComprasVentas_HostAddress = http://localhost:5171
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Ikx1aXNhLkJhcmVsYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Ikx1aXNhOTBAeWFob28uY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQURNSU4iLCJQZXJtaXNzaW9uIjpbImNyZWFyOnVzdWFyaW9zIiwibGVlcjp1c3VhcmlvcyIsImFjdHVhbGl6YXI6dXN1YXJpb3MiLCJlbGltaW5hcjp1c3VhcmlvcyIsImNyZWFyOnJvbGVzIiwibGVlcjpyb2xlcyIsImFjdHVhbGl6YXI6cm9sZXMiLCJlbGltaW5hcjpyb2xlcyIsImNyZWFyOnBlcm1pc29zIiwibGVlcjpwZXJtaXNvcyIsImFjdHVhbGl6YXI6cGVybWlzb3MiLCJlbGltaW5hcjpwZXJtaXNvcyIsImNyZWFyOnByb2R1Y3RvcyIsImxlZXI6cHJvZHVjdG9zIiwiYWN0dWFsaXphcjpwcm9kdWN0b3MiLCJlbGltaW5hcjpwcm9kdWN0b3MiLCJjcmVhcjpjYXRlZ29yaWFzIiwibGVlcjpjYXRlZ29yaWFzIiwiYWN0dWFsaXphcjpjYXRlZ29yaWFzIiwiZWxpbWluYXI6Y2F0ZWdvcmlhcyIsImNyZWFyOnN1Y3Vyc2FsZXMiLCJsZWVyOnN1Y3Vyc2FsZXMiLCJhY3R1YWxpemFyOnN1Y3Vyc2FsZXMiLCJlbGltaW5hcjpzdWN1cnNhbGVzIiwiY3JlYXI6YWxtYWNlbmVzIiwibGVlcjphbG1hY2VuZXMiLCJhY3R1YWxpemFyOmFsbWFjZW5lcyIsImVsaW1pbmFyOmFsbWFjZW5lcyIsImNyZWFyOm5vdGFzIiwibGVlcjpub3RhcyIsImFjdHVhbGl6YXI6bm90YXMiLCJlbGltaW5hcjpub3RhcyIsImNyZWFyOm1vdmltaWVudG9zIiwibGVlcjptb3ZpbWllbnRvcyIsImFjdHVhbGl6YXI6bW92aW1pZW50b3MiLCJlbGltaW5hcjptb3ZpbWllbnRvcyIsImNyZWFyOmNsaWVudGVzIiwibGVlcjpjbGllbnRlcyIsImFjdHVhbGl6YXI6Y2xpZW50ZXMiLCJlbGltaW5hcjpjbGllbnRlcyIsImNyZWFyOmRvY3VtZW50b3MiLCJsZWVyOmRvY3VtZW50b3MiLCJhY3R1YWxpemFyOmRvY3VtZW50b3MiLCJlbGltaW5hcjpkb2N1bWVudG9zIl0sImV4cCI6MTc4MjYxODMwNSwiaXNzIjoiQ29tcHJhc1ZlbnRhc0JhY2tJc3N1ZXIiLCJhdWQiOiJDb21wcmFzVmVudGFzQXVkaWVuY2UifQ.8TWWOlnXnZK-sD1-s4ZoLvTp0HWsxBSFtDF55W3vVX4
 
+###############################################################################
+# AUTH
+###############################################################################
+
+### Login
+POST {{ComprasVentas_HostAddress}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Email": "Luisa90@yahoo.com",
+    "Password": "Password123*"
+}
+
+### Refresh Token
+POST {{ComprasVentas_HostAddress}}/api/auth/refresh-token
+Content-Type: application/json
+Accept: application/json
+
+{
+    "RefreshToken": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+}
+
+###############################################################################
+# CATEGORIA (Requires Authorization)
+###############################################################################
+
+### Get all categorias
 GET {{ComprasVentas_HostAddress}}/api/categoria
 Accept: application/json
+Authorization: Bearer {{authToken}}
 
-### Get categoria By Id
-GET {{ComprasVentas_HostAddress}}/api/categoria/2
+### Get categoria by id
+GET {{ComprasVentas_HostAddress}}/api/categoria/1
 Accept: application/json
+Authorization: Bearer {{authToken}}
 
-
-###
+### Create categoria
 POST {{ComprasVentas_HostAddress}}/api/categoria
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{authToken}}
 
 {
-    "Nombre": "Categoria 2",
-    "Descripcion": "dasdsadsadsadsadas2"
+    "Nombre": "Nueva Categoria",
+    "Descripcion": "Descripcion de la nueva categoria"
 }
 
-###
-PUT {{ComprasVentas_HostAddress}}/api/categoria/3
+### Update categoria
+PUT {{ComprasVentas_HostAddress}}/api/categoria/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "Nombre": "Categoria Actualizada",
+    "Descripcion": "Descripcion actualizada"
+}
+
+### Delete categoria
+DELETE {{ComprasVentas_HostAddress}}/api/categoria/1
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+###############################################################################
+# PERMISO
+###############################################################################
+
+### Get all permisos
+GET {{ComprasVentas_HostAddress}}/api/permiso
+Accept: application/json
+
+### Get permiso by id
+GET {{ComprasVentas_HostAddress}}/api/permiso/45
+Accept: application/json
+
+### Create permiso
+POST {{ComprasVentas_HostAddress}}/api/permiso
 Content-Type: application/json
 Accept: application/json
 
 {
-    "Nombre": "Categoria 2 upd",
-    "Descripcion": "dasdsadsadsadsadas2 upd"
+    "Nombre": "Ver Reportes",
+    "Recurso": "Reportes",
+    "Action": "ver_reportes"
 }
 
-### Delete categoria By Id
-DELETE {{ComprasVentas_HostAddress}}/api/categoria/3
+### Update permiso
+PUT {{ComprasVentas_HostAddress}}/api/permiso/1
+Content-Type: application/json
 Accept: application/json
 
-### Get usuario By Id
-GET {{ComprasVentas_HostAddress}}/api/usuario/33
+{
+    "Nombre": "Ver Reportes Actualizado",
+    "Recurso": "Reportes",
+    "Action": "ver_reportes"
+}
+
+### Delete permiso
+DELETE {{ComprasVentas_HostAddress}}/api/permiso/1
+Accept: application/json
+
+###############################################################################
+# ROL
+###############################################################################
+
+### Get all roles
+GET {{ComprasVentas_HostAddress}}/api/rol
+Accept: application/json
+
+### Get rol by id
+GET {{ComprasVentas_HostAddress}}/api/rol/1
+Accept: application/json
+
+### Create rol
+POST {{ComprasVentas_HostAddress}}/api/rol
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Nombre": "Auditor",
+    "Descripcion": "Rol con permisos de solo lectura",
+    "PermisoIds": [1, 2, 3]
+}
+
+### Update rol
+PUT {{ComprasVentas_HostAddress}}/api/rol/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Nombre": "Auditor Actualizado",
+    "Descripcion": "Descripcion actualizada del rol auditor",
+    "PermisoIds": [1, 2]
+}
+
+### Delete rol
+DELETE {{ComprasVentas_HostAddress}}/api/rol/1
+Accept: application/json
+
+###############################################################################
+# USUARIO
+###############################################################################
+
+### Get usuario by id
+GET {{ComprasVentas_HostAddress}}/api/usuario/1
 Accept: application/json
 
 ### Create usuario
@@ -42,14 +155,38 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "Username": "Categoria 2",
-    "Email": "test@test.com",
-    "Password": "passworD1!",
-    "Nombres": "dasdsadsad sadsadas2",
-    "Apellidos": "dasdsadsa dsadsadas2",
-    "FechaNacimiento": "01/01/2000",
-    "Genero": "dasdsadsadsads",
-    "Telefono": "dasdsadsadsads",
-    "Direccion": "dasdsadsadsadsa",
-    "Nacionalidad": "dasdsadsadsad"
+    "Username": "jperez",
+    "Email": "jperez@mail.com",
+    "Password": "Password1!",
+    "Nombres": "Juan",
+    "Apellidos": "Perez",
+    "FechaNacimiento": "15/05/1990",
+    "Genero": "Masculino",
+    "Telefono": "123456789",
+    "Direccion": "Calle Principal 123",
+    "Nacionalidad": "Boliviana",
+    "RolIds": [1],
+    "Documentos": [
+        {
+            "Id": 0,
+            "Nombre": "Cedula de Identidad",
+            "DescripcionDoc": "Cedula frontal"
+        }
+    ]
 }
+
+###############################################################################
+# WEATHER FORECAST
+###############################################################################
+
+### Get weather forecast
+GET {{ComprasVentas_HostAddress}}/weatherforecast
+Accept: application/json
+
+###############################################################################
+# NOTA
+###############################################################################
+
+### Generate nota report (PDF)
+GET {{ComprasVentas_HostAddress}}/api/nota/1/report
+Accept: application/pdf

@@ -28,35 +28,11 @@ public class AppDbContext : DbContext
     public DbSet<Nota> Notas { get; set; }
     public DbSet<ClienteProveedor> ClienteProveedor { get; set; }
     public DbSet<Movimiento> Movimientos { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //config to snack_case database sintax
-        foreach( var entity in modelBuilder.Model.GetEntityTypes())
-        {
-            entity.SetTableName(ToSnackCase(entity.GetTableName()));
 
-            foreach (var property in entity.GetProperties())
-            {
-                property.SetColumnName(ToSnackCase(property.GetFieldName()));
-            }
-
-            foreach (var key in entity.GetKeys())
-            {
-                key.SetName(ToSnackCase(key.GetName()));
-            }
-
-            foreach (var fk in entity.GetForeignKeys())
-            {
-                fk.SetConstraintName(ToSnackCase(fk.GetConstraintName()));
-            }
-
-            foreach (var index in entity.GetIndexes())
-            {
-                index.SetDatabaseName(ToSnackCase(index.GetDatabaseName()));
-            }
-
-        }
         // Configuración adicional de las (entidades == modelos) si es necesario
         modelBuilder.Entity<Categoria>(e=>
         {
@@ -92,17 +68,17 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Usuario>()
            .HasMany(u => u.Roles)
            .WithMany(r => r.Usuarios)
-           .UsingEntity(j => j.ToTable("UsuariosRoles"));
+           .UsingEntity(j => j.ToTable("usuarios_roles"));
 
         modelBuilder.Entity<Rol>()
            .HasMany(p => p.Permisos)
            .WithMany(r => r.Roles)
-           .UsingEntity(j => j.ToTable("RolesPermisos"));   
+           .UsingEntity(j => j.ToTable("roles_permisos"));   
         
         modelBuilder.Entity<Usuario>()
            .HasMany(u => u.Sucursales)
            .WithMany(r => r.Usuarios)
-           .UsingEntity(j => j.ToTable("SucursalUsuario"));
+           .UsingEntity(j => j.ToTable("sucursal_usuario"));
 
         modelBuilder.Entity<Persona>(e=>
         {
@@ -141,6 +117,18 @@ public class AppDbContext : DbContext
             e.Property(c=>c.Action).IsRequired().HasMaxLength(100);
             
             e.HasIndex(c => c.Nombre).IsUnique();
+        });
+
+        modelBuilder.Entity<RefreshToken>(e=>
+        {
+            e.Property(c=>c.Id).ValueGeneratedOnAdd();
+            e.Property(c=>c.IsActive).IsRequired().HasMaxLength(100);
+            e.Property(c=>c.Expires).HasMaxLength(100);
+            e.Property(c=>c.Created).HasMaxLength(100);
+            e.Property(c=>c.Token).IsRequired().HasMaxLength(255);
+            e.HasOne(c=>c.Usuario)
+                .WithMany(s=>s.RefreshTokens)
+                .HasForeignKey("UsuarioId");
         });
 
         modelBuilder.Entity<Sucursal>(e=>
@@ -215,6 +203,32 @@ public class AppDbContext : DbContext
                 .WithMany(s=>s.Movimientos)
                 .HasForeignKey("NotaId");        
         });
+
+        // Config to snake_case database naming convention
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            entity.SetTableName(ToSnackCase(entity.GetTableName()));
+
+            foreach (var property in entity.GetProperties())
+            {
+                property.SetColumnName(ToSnackCase(property.Name));
+            }
+
+            foreach (var key in entity.GetKeys())
+            {
+                key.SetName(ToSnackCase(key.GetName()));
+            }
+
+            foreach (var fk in entity.GetForeignKeys())
+            {
+                fk.SetConstraintName(ToSnackCase(fk.GetConstraintName()));
+            }
+
+            foreach (var index in entity.GetIndexes())
+            {
+                index.SetDatabaseName(ToSnackCase(index.GetDatabaseName()));
+            }
+        }
     }
 
     private string ToSnackCase (string input)

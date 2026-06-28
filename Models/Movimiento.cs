@@ -12,7 +12,7 @@ public class Movimiento
 
     public decimal PrecioUnitarioCompra {get; set;}
     public decimal PrecioUnitarioVenta {get; set; }
-    private string? Observaciones { get; set; }
+    public string? Observaciones { get; set; }
 
     public Producto Producto { get; set; }
 

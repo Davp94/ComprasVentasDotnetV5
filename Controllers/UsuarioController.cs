@@ -25,7 +25,8 @@ namespace ComprasVentas
         }
 
         [HttpPost]
-        public async Task<ActionResult<UsuarioDto>> CreateUsuario([FromBody] CreateUsuarioDto createUsuarioDto) 
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<UsuarioDto>> CreateUsuario([FromForm] CreateUsuarioDto createUsuarioDto) 
         {
             try
             {

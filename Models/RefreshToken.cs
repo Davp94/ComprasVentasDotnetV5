@@ -13,7 +13,7 @@ public class RefreshToken
 
     public bool IsActive { get; set; }
 
-    public Usuario usuario { get; set; } = null;
+    public Usuario Usuario { get; set; } 
 
     public int UsuarioId { get; set; }
 }

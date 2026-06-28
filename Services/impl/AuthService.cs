@@ -16,7 +16,7 @@ public class AuthService(AppDbContext appDbContext, IConfiguration configuration
 
     public async Task<AuthResponse> Login(AuthRequest request)
     {
-        var usuario = await _context.Usuarios.Include(u=>u.Roles).FirstOrDefaultAsync(u => u.Email == request.Email);
+        var usuario = await _context.Usuarios.Include(u=>u.Roles).ThenInclude(r=>r.Permisos).FirstOrDefaultAsync(u => u.Email == request.Email);
 
         if(usuario == null || !BCrypt.Net.BCrypt.Verify(request.Password, usuario.Password))
         {
@@ -53,6 +53,7 @@ public class AuthService(AppDbContext appDbContext, IConfiguration configuration
         var usuario = await _context.Usuarios
             .Include(u=>u.RefreshTokens)
             .Include(u=>u.Roles)
+            .ThenInclude(r=>r.Permisos)
             .FirstOrDefaultAsync(u=>u.RefreshTokens.Any(t => t.Token == request.RefreshToken));
 
         if(usuario == null) return null;
