@@ -190,3 +190,69 @@ Accept: application/json
 ### Generate nota report (PDF)
 GET {{ComprasVentas_HostAddress}}/api/nota/1/report
 Accept: application/pdf
+
+###############################################################################
+# PRODUCTO (Requires Authorization)
+###############################################################################
+
+### Get all productos (default pagination)
+GET {{ComprasVentas_HostAddress}}/api/producto
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### Get productos - page 2, size 5, sorted by Nombre asc
+GET {{ComprasVentas_HostAddress}}/api/producto?Page=1&Size=10&SortField=Nombre&SortOrder=asc
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### Get productos - filter by global value
+GET {{ComprasVentas_HostAddress}}/api/producto?filterValue=ladrillo
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### Get productos - filter by nombre
+GET {{ComprasVentas_HostAddress}}/api/producto?Nombre=ladrillo
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### Get productos - filter by marca
+GET {{ComprasVentas_HostAddress}}/api/producto?Marca=Nestlé
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### Get productos - filter by categoria
+GET {{ComprasVentas_HostAddress}}/api/producto?NombreCategoria=lácteos
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### Get productos by almacen
+GET {{ComprasVentas_HostAddress}}/api/producto/almacen/1
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+### Create Nota 
+POST {{ComprasVentas_HostAddress}}/api/nota
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "Impuestos": 0,
+    "Total": 1000,
+    "Descuentos": 0,
+    "Observaciones": "dsadsadsa",
+    "Tipo": "COMPRA",
+    "ClienteProveedorId": 1,
+    "UsuarioId": 1,
+    "Movimientos": [
+        {
+            "Cantidad": 1,
+            "TipoMovimiento": "COMPRA",
+            "PrecioUnitarioCompra": 22,
+            "PrecioUnitarioVenta": 32,
+            "Observaciones": "dsadsadsa",
+            "ProductoId": 8,
+            "AlmacenId": 1
+        }
+    ]
+}

@@ -2,6 +2,7 @@ using System;
 using AutoMapper;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -18,20 +19,20 @@ public class NotaService(AppDbContext appDbContext, IMapper mapper) : INotaServi
     {
         decimal calculateTotal = createNotaDto.Movimientos.Sum(m=>m.Cantidad * (createNotaDto.Tipo == "COMPRA" ? m.PrecioUnitarioCompra : m.PrecioUnitarioVenta));
 
-        if(Math.Abs(calculateTotal + createNotaDto.Impuestos - createNotaDto.Descuentos - createNotaDto.Total) > 0.01m)
-        {
-            throw new Exception("El total proporcionado no coincide con el cálculo realizado");
-        }
+        // if(Math.Abs(calculateTotal + createNotaDto.Impuestos - createNotaDto.Descuentos - createNotaDto.Total) > 0.01m)
+        // {
+        //     throw new Exception("El total proporcionado no coincide con el cálculo realizado");
+        // }
         var connection = _appDbContext.Database.GetDbConnection();
-        if(connection.State == System.Data.ConnectionState.Closed)
+        if(connection.State != System.Data.ConnectionState.Open)
             await connection.OpenAsync();
-        var transaction = connection.BeginTransaction();
+        await using var transaction = await connection.BeginTransactionAsync();
 
         try
         {
             const string sqlNota = @"
-                INSERT INTO notas(fecha, tipo_nota, descuento, impuestos, total, estado, observaciones, usuario_id, cliente_proveedor_id) 
-                VALUES (@Fecha, @TipoNota, @Descuento, @Impuestos, @Total, @Estado, @Observaciones, @UsuarioId, @ClienteProveedorId)
+                INSERT INTO notas(fecha, tipo_nota, descuento, impuestos, estado, observaciones, usuario_id, cliente_proveedor_id) 
+                VALUES (@Fecha, @TipoNota, @Descuento, @Impuestos, @Estado, @Observaciones, @UsuarioId, @ClienteProveedorId)
                 RETURNING id;
             ";
             var notaId = await connection.ExecuteScalarAsync<int>(sqlNota, new
@@ -40,14 +41,12 @@ public class NotaService(AppDbContext appDbContext, IMapper mapper) : INotaServi
                 TipoNota = createNotaDto.Tipo,
                 Descuento = createNotaDto.Descuentos,
                 Impuestos = createNotaDto.Impuestos,
-                Total = createNotaDto.Total,
                 Estado = true,
                 Observaciones = createNotaDto.Observaciones,
                 UsuarioId = createNotaDto.UsuarioId,
                 ClienteProveedorId = createNotaDto.ClienteProveedorId
             }, transaction);
 
-            //add movimientos
             foreach (var movDto in createNotaDto.Movimientos)
             {
                 const string sqlMovimientos = @"
@@ -100,11 +99,10 @@ public class NotaService(AppDbContext appDbContext, IMapper mapper) : INotaServi
                     }, transaction);
                 }
             }
-            //update inventario
             
-            //close transaction
             await transaction.CommitAsync();
-            //return data
+            await connection.CloseAsync();
+
             return await FindByIdAsync(notaId);
         }
         catch (System.Exception)
@@ -117,6 +115,8 @@ public class NotaService(AppDbContext appDbContext, IMapper mapper) : INotaServi
     public async Task<IEnumerable<NotaResponseDto>> FindAllAsync()
     {
         var connection = _appDbContext.Database.GetDbConnection();
+        if (connection.State != System.Data.ConnectionState.Open)
+            await connection.OpenAsync();
         const string sql = @"
             SELECT n.id as Id, n.fecha as Fecha, n.tipo_nota as TipoNota, n.descuento as Descuento, n.impuestos as Impuestos, n.total as Total, n.estado as Estado, n.observaciones as Observaciones,
                    n.usuario_id as UsuarioId, n.cliente_proveedor_id as ClienteProveedorId,
@@ -133,6 +133,8 @@ public class NotaService(AppDbContext appDbContext, IMapper mapper) : INotaServi
     public async Task<NotaResponseDto> FindByIdAsync(int id)
     {
         var connection = _appDbContext.Database.GetDbConnection();
+        if (connection.State != System.Data.ConnectionState.Open)
+            await connection.OpenAsync();
         const string sqlNota = @"
             SELECT n.id as Id, n.fecha as Fecha, n.tipo_nota as TipoNota, n.descuento as Descuento, n.impuestos as Impuestos, n.total as Total, n.estado as Estado, n.observaciones as Observaciones,
                    n.usuario_id as UsuarioId, n.cliente_proveedor_id as ClienteProveedorId,

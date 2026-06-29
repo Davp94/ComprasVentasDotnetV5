@@ -32,6 +32,7 @@ builder.Services.AddScoped<IPermisoService, PermisoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<INotaService, NotaService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<EncryptionService>();
 //validations
 builder.Services.AddScoped<IUniqueNameChecker, UniqueNameChecker>();
@@ -43,10 +44,11 @@ builder.Services.AddScoped<CategoriaSeeder>();
 builder.Services.AddScoped<ProductoSeeder>();
 builder.Services.AddScoped<SucursalSeeder>();
 builder.Services.AddScoped<AlmacenSeeder>();
+builder.Services.AddScoped<AlmacenProductoSeeder>();
 builder.Services.AddScoped<ClienteProveedorSeeder>();
 builder.Services.AddScoped<DataSeeder>();
 //AutoMapper
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 //JWT Auth
 builder.Services.AddAuthentication(options =>
 {

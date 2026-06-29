@@ -15,5 +15,12 @@ namespace ComprasVentas
             var pdf = await _notaService.GenerateNotaReportAsync(id);
             return File(pdf, "application/pdf", $"nota_{id}_report.pdf");
         }
+
+        [HttpPost]
+        public async Task<ActionResult<NotaResponseDto>> CreateNota([FromBody]CreateNotaDto createNotaDto)
+        {
+            var nota = await _notaService.CreateAsync(createNotaDto);
+            return Ok(nota);
+        }
     }
 }

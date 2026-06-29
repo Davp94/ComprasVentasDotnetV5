@@ -13,6 +13,7 @@ public class DataSeeder
     private readonly ProductoSeeder _productoSeeder;
     private readonly SucursalSeeder _sucursalSeeder;
     private readonly AlmacenSeeder _almacenSeeder;
+    private readonly AlmacenProductoSeeder _almacenProductoSeeder;
     private readonly ClienteProveedorSeeder _clienteProveedorSeeder;
 
     public DataSeeder(
@@ -23,6 +24,7 @@ public class DataSeeder
         ProductoSeeder productoSeeder,
         SucursalSeeder sucursalSeeder,
         AlmacenSeeder almacenSeeder,
+        AlmacenProductoSeeder almacenProductoSeeder,
         ClienteProveedorSeeder clienteProveedorSeeder)
     {
         _permisoSeeder = permisoSeeder;
@@ -32,6 +34,7 @@ public class DataSeeder
         _productoSeeder = productoSeeder;
         _sucursalSeeder = sucursalSeeder;
         _almacenSeeder = almacenSeeder;
+        _almacenProductoSeeder = almacenProductoSeeder;
         _clienteProveedorSeeder = clienteProveedorSeeder;
     }
 
@@ -45,6 +48,7 @@ public class DataSeeder
         await _productoSeeder.SeedAsync();
         await _sucursalSeeder.SeedAsync();
         await _almacenSeeder.SeedAsync();
+        await _almacenProductoSeeder.SeedAsync();
         await _clienteProveedorSeeder.SeedAsync();
     }
 }
