@@ -9,22 +9,22 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Restore dependencies
-COPY ["backend_base.csproj", "./"]
-RUN dotnet restore "backend_base.csproj"
+COPY ["ComprasVentas.csproj", "./"]
+RUN dotnet restore "ComprasVentas.csproj"
 
 # Copy source code and build
 COPY . .
 WORKDIR "/src"
-RUN dotnet build "backend_base.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "ComprasVentas.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Publish application
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "backend_base.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "ComprasVentas.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Final image
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "backend_base.dll"]
+ENTRYPOINT ["dotnet", "ComprasVentas.dll"]
 
