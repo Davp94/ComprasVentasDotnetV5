@@ -15,6 +15,8 @@ builder.Services.AddDbContext<ComprasVentas.AppDbContext>(options =>
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")
 ));
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+DotNetEnv.Env.Load();
+
 //Serilog
 builder.Host.UseSerilog((context, services, config) =>
     config.ReadFrom.Configuration(context.Configuration)
